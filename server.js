@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const compression = require("compression");
 
 // Declare port.
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Create server.
 const app = express();
@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(express.static("public"));
 
 // Set up mongoose connection.
-mongoose.connect("mongodb://localhost/budget",
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/budget",
 {
     // Fix mongoose deprecated issues.
     useNewUrlParser: true,
