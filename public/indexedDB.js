@@ -10,9 +10,7 @@ request.onupgradeneeded = function (e)
 
     //If it has no stores, make a new one.
     if (db.objectStoreNames.length === 0)
-    {
         db.createObjectStore("TransactionsStore", { autoIncrement: true });
-    }
 }
 
 //If indexeddb works.
@@ -23,9 +21,7 @@ request.onsuccess = function (e)
 
     //Check online status of the browser.
     if (navigator.onLine)
-    {
         checkDB();
-    }
 }
 
 //If indexeddb doesn't work.
@@ -38,10 +34,13 @@ request.onerror = function (e)
 //Check the db.
 function checkDB()
 {
+    //DataBase > transaction > store > get all entries.
     const getAll = db.transaction(["TransactionsStore"], "readwrite").objectStore("TransactionsStore").getAll();
 
+    //If getting is successful.
     getAll.onsuccess = function ()
     {
+        //If there are entries, bulk add them to the api db.
         if (getAll.result.length > 0)
         {
             fetch("/api/transaction/bulk",
@@ -57,9 +56,8 @@ function checkDB()
                 .then(res =>
                     {
                         if (res.length !== 0)
-                        {
+                            //DataBase > transaction > store > clear.
                             db.transaction(["TransactionsStore"], "readwrite").objectStore("TransactionsStore").clear();
-                        }
                     });
         }
     }
@@ -68,6 +66,7 @@ function checkDB()
 //Save a record to the db.
 function saveRecord(record)
 {
+    //DataBase > transaction > store > add record.
     db.transaction(["TransactionsStore"], "readwrite").objectStore("TransactionsStore").add(record);
 }
 
